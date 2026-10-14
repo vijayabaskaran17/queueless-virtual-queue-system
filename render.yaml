@@ -30,7 +30,7 @@ services:
         fromService:
           type: web
           name: queueless-notifications
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
       - key: CLIENT_URL
         sync: false
 
@@ -57,7 +57,6 @@ services:
         fromService:
           type: web
           name: queueless-server
-          property: envVar
           envVarKey: JWT_SECRET
       - key: MONGODB_URI
         sync: false
@@ -65,7 +64,7 @@ services:
         fromService:
           type: web
           name: queueless-server
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
       - key: CLIENT_URL
         sync: false
 
@@ -87,4 +86,4 @@ services:
         fromService:
           type: web
           name: queueless-server
-          property: host
+          envVarKey: RENDER_EXTERNAL_URL
