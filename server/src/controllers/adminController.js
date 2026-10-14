@@ -9,6 +9,7 @@ const Organization = require('../models/Organization');
 const StaffInvitation = require('../models/StaffInvitation');
 const CounterSwitchRequest = require('../models/CounterSwitchRequest');
 const Notification = require('../models/Notification');
+const notificationClient = require('../services/notificationClient');
 const { sendStaffInvitationEmail } = require('../services/emailService');
 const cacheService = require('../services/cacheService');
 const { emitNotification, emitCounterUpdate, getIO } = require('../sockets/socketEmitter');
@@ -821,8 +822,8 @@ const approveCounterSwitchRequest = async (req, res) => {
     }
     await switchRequest.save();
 
-    // 5. Notify staff member
-    const notif = await Notification.create({
+    // 5. Notify staff member via Notification Microservice
+    const notif = await notificationClient.dispatchNotification({
       recipient: staffUser._id,
       title: 'Counter Switch Approved',
       message: `Your request to switch to ${targetCounter.name} has been approved by the Administrator.`,
@@ -895,8 +896,8 @@ const rejectCounterSwitchRequest = async (req, res) => {
     switchRequest.adminFeedback = reason || '';
     await switchRequest.save();
 
-    // Notify staff member
-    const notif = await Notification.create({
+    // Notify staff member via Notification Microservice
+    const notif = await notificationClient.dispatchNotification({
       recipient: switchRequest.staff._id,
       title: 'Counter Switch Request Declined',
       message: `Your request to switch to ${switchRequest.targetCounter?.name || 'the counter'} was declined by the Administrator.${reason ? ` Note: ${reason}` : ''}`,

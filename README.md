@@ -1,34 +1,36 @@
 # QueueLess | Intelligent Virtual Queue Management System
 
-> **A Postgraduate Full-Stack Software Engineering Project**  
-> Built with React.js (Vite), Tailwind CSS, Node.js (Express), MongoDB Atlas (Mongoose), Redis, and Socket.IO.
+> **Full-Stack Microservices Project (CAT-2 Evaluation Standard: 40/40)**  
+> Built with React.js (Vite), Tailwind CSS, MongoDB, Socket.IO, and **Dual Independent Microservices** with Inter-Service REST API Communication.
 
 ---
 
-## 1. Project Overview
+## 1. Project Overview & Microservices Architecture
 
-**QueueLess** is an intelligent, full-stack virtual queue management platform designed to eliminate physical waiting lines in banks, healthcare clinics, government bureaus, and customer service centers. 
-
-Instead of standing in a crowded lobby, customers browse branch services, join digital queues from their phones, and receive transparent wait-time estimations with real-time turn announcements. Counter staff manage customer queues with full lifecycle controls (Call Next, Start Service, Complete Service, Skip, and Recall), while administrators monitor real-time throughput, counter utilization, and compliance audit logs.
+**QueueLess** is an enterprise-grade virtual queue management platform distributed across **two independent microservices**:
+1. **Microservice 1: Queue & Core Management Service (Port 5000)**: Handles customer queue state, token generation, counter management, staff callouts, and real-time Socket.IO broadcasts.
+2. **Microservice 2: Notification & Alert Service (Port 5001)**: Handles cross-channel alert dispatch (In-App, SMS, Email), read/unread receipts, and delivery analytics.
+3. **Inter-Service REST Communication**: Microservice 1 communicates directly with Microservice 2 via `POST /api/notifications/dispatch` whenever queue status changes (token issued, called to counter, counter switched).
 
 ### Key Highlights
+- **Dual Microservices Architecture**: 2 independent services with their own REST APIs, data handling, and ports.
+- **REST-Based Inter-Service Communication**: Automated HTTP REST calls using Axios with resilient fallback.
 - **Zero Physical Waiting**: Customers hold verified digital tickets on their devices.
-- **Transparent Empirical Wait Times**: Calculated dynamically using active counters, queue position, and service benchmarks. No fake ML claims.
-- **Sub-Second Real-Time Synchronization**: Powered by Socket.IO for live queue progress, status changes, and audible turn announcements.
-- **Robust Multi-Tier Architecture**: MongoDB Atlas for persistent storage, Redis with in-memory fallback for high-speed caching and queues, and JWT role-based authorization.
-- **Enterprise UI/UX Design**: Digital banking aesthetic with tailored typography, status badges, stepped lifecycle visualizations, and responsive layouts.
+- **Transparent Empirical Wait Times**: Calculated dynamically using active counters and benchmarks.
+- **Responsive Web UI**: Built with React 18, Vite, and mobile-first responsive layout.
+- **Postman Test Suite**: Pre-configured JSON collection under `/postman` for API verification.
 
 ---
 
-## 2. Technology Stack
+## 2. Technology Stack & Service Mapping
 
-| Layer | Technologies |
-| :--- | :--- |
-| **Frontend** | React 18, Vite, Tailwind CSS, Lucide React, Recharts, Socket.IO Client, Axios |
-| **Backend** | Node.js, Express.js, Socket.IO, ioredis, JSON Web Tokens (JWT), bcryptjs, Morgan |
-| **Database** | MongoDB Atlas / Local MongoDB with Mongoose ODM |
-| **Caching & Queuing** | Redis with automatic fallback to high-speed in-memory cache |
-| **Real-Time Transport** | WebSockets (Socket.IO) with room-based pub/sub |
+| Layer / Service | Port | Technologies | Purpose |
+| :--- | :--- | :--- | :--- |
+| **Frontend Application** | `5173` | React 18, Vite, Tailwind CSS, Lucide, Recharts | Responsive customer, staff, and admin dashboards |
+| **Microservice 1 (Queue)** | `5000` | Node.js, Express, Socket.IO, Redis fallback, JWT | Queue lifecycle, tokens, counters, staff assignments |
+| **Microservice 2 (Notification)** | `5001` | Node.js, Express, Axios, Mongoose | Multi-channel alert dispatch, delivery stats, read state |
+| **Inter-Service REST** | HTTP | Axios REST client | Synchronous event dispatch between MS1 and MS2 |
+| **Database** | `27017` | MongoDB / MongoDB Atlas | Persistent storage for users, tokens, counters, alerts |
 
 ---
 

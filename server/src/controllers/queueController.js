@@ -2,6 +2,7 @@ const Service = require('../models/Service');
 const Token = require('../models/Token');
 const Counter = require('../models/Counter');
 const Notification = require('../models/Notification');
+const notificationClient = require('../services/notificationClient');
 const QueueLog = require('../models/QueueLog');
 const QueueSetting = require('../models/QueueSetting');
 const { calculateWaitTime } = require('../services/waitTimeEstimator');
@@ -159,13 +160,14 @@ const joinQueue = async (req, res) => {
       details: `Token ${tokenNumber} issued to ${req.user.name}`,
     });
 
-    // Create confirmation in-app notification
-    const notification = await Notification.create({
+    // Create confirmation in-app notification via Notification Microservice
+    const notification = await notificationClient.dispatchNotification({
       recipient: userId,
       title: 'Token Generated Successfully',
       message: `Your token ${tokenNumber} has been generated for ${service.name}. Queue position: #${waitStats.aheadCount + 1}.`,
       type: 'success',
       token: token._id,
+      channels: ['in-app', 'sms'],
     });
 
     // Invalidate caches & emit real-time events
@@ -346,7 +348,7 @@ const cancelToken = async (req, res) => {
       details: `Token ${token.tokenNumber} cancelled by ${req.user.name}`,
     });
 
-    const notification = await Notification.create({
+    const notification = await notificationClient.dispatchNotification({
       recipient: token.customer,
       title: 'Token Cancelled',
       message: `Your token ${token.tokenNumber} for ${token.service?.name} has been cancelled.`,

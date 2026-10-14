@@ -3,6 +3,7 @@ const Counter = require('../models/Counter');
 const Service = require('../models/Service');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const notificationClient = require('../services/notificationClient');
 const QueueLog = require('../models/QueueLog');
 const CounterSwitchRequest = require('../models/CounterSwitchRequest');
 const cacheService = require('../services/cacheService');
@@ -185,13 +186,14 @@ const callNextToken = async (req, res) => {
       details: `Token ${nextToken.tokenNumber} called to ${counter.name}`,
     });
 
-    // Notify customer
-    const notification = await Notification.create({
+    // Notify customer via Notification Microservice
+    const notification = await notificationClient.dispatchNotification({
       recipient: nextToken.customer._id,
       title: 'It is Your Turn!',
       message: `Token ${nextToken.tokenNumber}: Please proceed to ${counter.name} now.`,
       type: 'called',
       token: nextToken._id,
+      channels: ['in-app', 'sms'],
     });
 
     // Real-time broadcasts
@@ -250,7 +252,7 @@ const startService = async (req, res) => {
       details: `Service started for token ${token.tokenNumber}`,
     });
 
-    const notification = await Notification.create({
+    const notification = await notificationClient.dispatchNotification({
       recipient: token.customer._id,
       title: 'Service Started',
       message: `Your service for token ${token.tokenNumber} is now in progress.`,
@@ -319,7 +321,7 @@ const completeService = async (req, res) => {
       details: `Token ${token.tokenNumber} completed. ${notes ? `Notes: ${notes}` : ''}`,
     });
 
-    const notification = await Notification.create({
+    const notification = await notificationClient.dispatchNotification({
       recipient: token.customer._id,
       title: 'Service Completed',
       message: `Thank you! Your service for token ${token.tokenNumber} has been successfully completed.`,
@@ -386,7 +388,7 @@ const skipToken = async (req, res) => {
       details: `Token ${token.tokenNumber} skipped as customer did not respond.`,
     });
 
-    const notification = await Notification.create({
+    const notification = await notificationClient.dispatchNotification({
       recipient: token.customer._id,
       title: 'Token Skipped',
       message: `Your token ${token.tokenNumber} was skipped because you were unavailable. You may ask staff to recall your token.`,
@@ -460,12 +462,13 @@ const recallToken = async (req, res) => {
       details: `Token ${token.tokenNumber} recalled for the ${token.recalledCount} time`,
     });
 
-    const notification = await Notification.create({
+    const notification = await notificationClient.dispatchNotification({
       recipient: token.customer._id,
       title: 'FINAL CALL: Token Recalled',
       message: `Token ${token.tokenNumber}: Please proceed immediately to ${counter ? counter.name : 'the counter'}.`,
       type: 'called',
       token: token._id,
+      channels: ['in-app', 'sms'],
     });
 
     emitTokenStatusChange(token.customer._id, token);
@@ -611,7 +614,7 @@ const requestCounterSwitch = async (req, res) => {
     const admins = await User.find({ role: 'admin' });
     const currentCounterLabel = currentCounter ? currentCounter.name : 'Unassigned Desk';
     for (const admin of admins) {
-      const notif = await Notification.create({
+      const notif = await notificationClient.dispatchNotification({
         recipient: admin._id,
         title: 'Counter Switch Request',
         message: `${req.user.name} requested to switch from ${currentCounterLabel} to ${targetCounter.name}.`,
@@ -794,7 +797,7 @@ const registerWalkinCustomer = async (req, res) => {
           details: `Walk-in customer ${name} verified with ${documentType.toUpperCase()} (${documentNumber}) and issued token ${tokenNumber}`,
         });
 
-        const notification = await Notification.create({
+        const notification = await notificationClient.dispatchNotification({
           recipient: customer._id,
           title: 'Official Document Verified & Token Issued',
           message: `Official document (${documentType.toUpperCase()}: ${documentNumber}) verified by staff. Your token ${tokenNumber} has been issued.`,

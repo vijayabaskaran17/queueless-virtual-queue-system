@@ -1,0 +1,240 @@
+{
+  "info": {
+    "_postman_id": "queueless-microservices-eval-2026",
+    "name": "QueueLess - Dual Microservices Architecture API Collection",
+    "description": "Comprehensive Postman test collection for QueueLess Intelligent Virtual Queue Management System.\n\nMicroservices:\n1. Queue & Core Service (Port 5000)\n2. Notification & Alert Service (Port 5001)\n\nDemonstrates Inter-Service REST API Communication, CRUD operations, Authentication, and Multi-Channel Delivery.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "queue_url",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "key": "notification_url",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Microservice 1 - Queue Service (Port 5000)",
+      "item": [
+        {
+          "name": "Queue Service - Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{queue_url}}/api/health",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "health"]
+            }
+          }
+        },
+        {
+          "name": "Auth - Customer Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.token) {",
+                  "    pm.collectionVariables.set('auth_token', jsonData.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"hari@example.com\",\n  \"password\": \"Customer@123\"\n}"
+            },
+            "url": {
+              "raw": "{{queue_url}}/api/auth/login",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Auth - Staff Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"alex@queueless.internal\",\n  \"password\": \"Staff@123\"\n}"
+            },
+            "url": {
+              "raw": "{{queue_url}}/api/auth/login",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Queue - Get All Services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{queue_url}}/api/queue/services",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "queue", "services"]
+            }
+          }
+        },
+        {
+          "name": "Queue - Issue Token (Triggers REST Inter-Service to Notification Service)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"serviceId\": \"REPLACE_WITH_SERVICE_ID\",\n  \"priority\": \"normal\"\n}"
+            },
+            "url": {
+              "raw": "{{queue_url}}/api/queue/token",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "queue", "token"]
+            }
+          }
+        },
+        {
+          "name": "Queue - Get My Active Token",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{queue_url}}/api/queue/my-token",
+              "host": ["{{queue_url}}"],
+              "path": ["api", "queue", "my-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Microservice 2 - Notification Service (Port 5001)",
+      "item": [
+        {
+          "name": "Notification Service - Health Check & Inter-Service Ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/health",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "health"]
+            }
+          }
+        },
+        {
+          "name": "Notification Service - Capabilities & Metadata",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/info",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "info"]
+            }
+          }
+        },
+        {
+          "name": "Inter-Service REST Endpoint - Dispatch Notification",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "X-Service-Origin", "value": "Queue-Service" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"recipient\": \"REPLACE_WITH_USER_ID\",\n  \"title\": \"Direct REST Dispatch Test\",\n  \"message\": \"Verification message sent from Queue Service via HTTP REST POST.\",\n  \"type\": \"called\",\n  \"channels\": [\"in-app\", \"sms\"]\n}"
+            },
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/dispatch",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "dispatch"]
+            }
+          }
+        },
+        {
+          "name": "Notification Service - Get User Notifications",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications"]
+            }
+          }
+        },
+        {
+          "name": "Notification Service - Delivery Analytics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/analytics",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "analytics"]
+            }
+          }
+        },
+        {
+          "name": "Notification Service - Mark All Read",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{auth_token}}" }
+            ],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/read-all",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "read-all"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Inter-Service Communication Verification",
+      "item": [
+        {
+          "name": "Verify Bidirectional Connectivity",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{notification_url}}/api/notifications/health",
+              "host": ["{{notification_url}}"],
+              "path": ["api", "notifications", "health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

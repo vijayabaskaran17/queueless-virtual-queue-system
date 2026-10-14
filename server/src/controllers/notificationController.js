@@ -1,10 +1,20 @@
 const Notification = require('../models/Notification');
+const notificationClient = require('../services/notificationClient');
 
-// @desc    Get current user notifications
+// @desc    Get current user notifications (Proxied to Notification Microservice via REST)
 // @route   GET /api/notifications
 // @access  Private
 const getMyNotifications = async (req, res) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const remoteData = await notificationClient.fetchUserNotifications(authHeader);
+      if (remoteData) {
+        return res.status(200).json(remoteData);
+      }
+    }
+
+    // Fallback: Query local database
     const notifications = await Notification.find({ recipient: req.user._id })
       .sort({ createdAt: -1 })
       .limit(30)
@@ -33,6 +43,15 @@ const getMyNotifications = async (req, res) => {
 // @access  Private
 const markAsRead = async (req, res) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const remoteData = await notificationClient.markNotificationRead(req.params.id, authHeader);
+      if (remoteData) {
+        return res.status(200).json(remoteData);
+      }
+    }
+
+    // Fallback: Local database update
     const notification = await Notification.findOneAndUpdate(
       { _id: req.params.id, recipient: req.user._id },
       { isRead: true },
@@ -63,6 +82,15 @@ const markAsRead = async (req, res) => {
 // @access  Private
 const markAllAsRead = async (req, res) => {
   try {
+    const authHeader = req.headers.authorization;
+    if (authHeader) {
+      const remoteData = await notificationClient.markAllNotificationsRead(authHeader);
+      if (remoteData) {
+        return res.status(200).json(remoteData);
+      }
+    }
+
+    // Fallback: Local database update
     await Notification.updateMany(
       { recipient: req.user._id, isRead: false },
       { isRead: true }
