@@ -14,7 +14,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 
 const LoginPage = () => {
-  const { login, isAuthenticated, user } = useAuth();
+  const { login, logout, isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -124,6 +124,16 @@ const LoginPage = () => {
     try {
       // Pass the active portal role to enforce strict role separation
       const loggedInUser = await login(email, password, activeRole);
+
+      // Strict role enforcement: If the authenticated account doesn't match the active gateway
+      if (activeRole && loggedInUser.role !== activeRole) {
+        if (logout) logout();
+        setError(
+          `Access Denied: This account has '${loggedInUser.role.toUpperCase()}' privileges. Please select the ${loggedInUser.role.toUpperCase()} tab to authenticate.`
+        );
+        return;
+      }
+
       const roleMap = {
         customer: '/customer',
         staff: '/staff',

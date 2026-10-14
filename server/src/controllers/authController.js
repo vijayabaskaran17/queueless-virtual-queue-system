@@ -338,11 +338,11 @@ const login = async (req, res) => {
           });
         }
       } else if (portalRole === 'staff') {
-        // Staff portal security validation (no fixed domain restriction!)
-        if (user.role !== 'staff' && user.role !== 'admin') {
+        // Staff portal security validation: Strictly allow ONLY staff accounts
+        if (user.role !== 'staff') {
           return res.status(403).json({
             success: false,
-            message: 'Access Denied: Staff authorization required. Customer accounts cannot authenticate through the Staff Console.',
+            message: 'Access Denied: Staff clearance required. Administrator accounts must authenticate via the Executive Administration portal.',
           });
         }
       } else if (portalRole === 'admin') {
