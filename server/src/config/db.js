@@ -15,9 +15,11 @@ const connectDB = async () => {
     });
     isConnected = true;
     console.log(`[MongoDB] Connected successfully: ${conn.connection.host}`);
+    return true;
   } catch (error) {
     console.error(`[MongoDB] Connection Warning: ${error.message}`);
     console.warn('[MongoDB] Operating with local connection error handling. Check MONGODB_URI in .env');
+    return false;
   }
 };
 

@@ -13,7 +13,11 @@ export const SocketProvider = ({ children }) => {
     let socketInstance = null;
 
     if (isAuthenticated && token) {
-      socketInstance = io('/', {
+      let socketTarget = import.meta.env.VITE_API_URL ? import.meta.env.VITE_API_URL.trim() : '/';
+      if (socketTarget && socketTarget !== '/' && !socketTarget.startsWith('http://') && !socketTarget.startsWith('https://')) {
+        socketTarget = `https://${socketTarget}`;
+      }
+      socketInstance = io(socketTarget, {
         auth: { token },
         transports: ['websocket', 'polling'],
         reconnectionAttempts: 10,

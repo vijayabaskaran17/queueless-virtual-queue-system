@@ -286,7 +286,26 @@ Where:
 
 ---
 
-## 10. License
+## 10. Cloud Deployment on Render
+
+QueueLess is fully prepared for cloud deployment on [Render](https://render.com) with its multi-service Blueprint [`render.yaml`](./render.yaml).
+
+### Deployed Services Architecture
+1. **Frontend**: Static Site / Single Page Application (`client`)
+2. **Microservice 1 (Core)**: Web Service on Node.js (`server`)
+3. **Microservice 2 (Notifications)**: Web Service on Node.js (`notification-service`)
+
+### Quick Deployment via Blueprint
+1. Connect your repository on [Render](https://dashboard.render.com).
+2. Click **New +** -> **Blueprint**.
+3. Select this repository; Render will automatically detect [`render.yaml`](./render.yaml) and configure all 3 services.
+4. Provide your `MONGODB_URI` (from a free [MongoDB Atlas M0 cluster](https://www.mongodb.com/cloud/atlas)) and apply.
+
+Detailed manual and automated setup instructions are documented in [Render Deployment Guide](./docs/RENDER_DEPLOYMENT_GUIDE.md).
+
+---
+
+## 11. License
 
 This project was developed for academic and professional demonstration purposes in postgraduate software engineering.
 All rights reserved © 2026 QueueLess Team.

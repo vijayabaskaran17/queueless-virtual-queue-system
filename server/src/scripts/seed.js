@@ -10,12 +10,14 @@ const Notification = require('../models/Notification');
 const Organization = require('../models/Organization');
 const StaffInvitation = require('../models/StaffInvitation');
 
-const seedData = async () => {
+const seedData = async (isAutoSeed = false) => {
   const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/queueless';
 
   try {
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
-    console.log('[Seed] Connected to MongoDB');
+    if (mongoose.connection.readyState !== 1) {
+      await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
+      console.log('[Seed] Connected to MongoDB');
+    }
 
     // Clear existing collections
     await User.deleteMany({});
@@ -314,11 +316,19 @@ const seedData = async () => {
     });
 
     console.log('[Seed] Database successfully seeded with demo accounts, services, counters, and active queues!');
-    process.exit(0);
+    if (!isAutoSeed) {
+      process.exit(0);
+    }
   } catch (error) {
     console.error('[Seed Error]:', error);
-    process.exit(1);
+    if (!isAutoSeed) {
+      process.exit(1);
+    }
   }
 };
 
-seedData();
+if (require.main === module) {
+  seedData(false);
+}
+
+module.exports = seedData;

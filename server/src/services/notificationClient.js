@@ -1,8 +1,10 @@
 const axios = require('axios');
 const Notification = require('../models/Notification');
 
-const NOTIFICATION_SERVICE_URL =
-  process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:5001';
+const rawNotifUrl = process.env.NOTIFICATION_SERVICE_URL || 'http://localhost:5001';
+const NOTIFICATION_SERVICE_URL = (rawNotifUrl.startsWith('http://') || rawNotifUrl.startsWith('https://'))
+  ? rawNotifUrl.replace(/\/+$/, '')
+  : `https://${rawNotifUrl.replace(/\/+$/, '')}`;
 
 /**
  * Dispatches a notification to the Notification Microservice via REST API

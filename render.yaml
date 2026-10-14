@@ -1,0 +1,90 @@
+# Render Infrastructure-as-Code Blueprint
+# Deploy: In Render Dashboard -> New -> Blueprint -> Select this GitHub repository
+services:
+  # -------------------------------------------------------------------
+  # Microservice 1: Core Queue & Auth Backend API (Express + Socket.io)
+  # -------------------------------------------------------------------
+  - type: web
+    name: queueless-server
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: TZ
+        value: Asia/Kolkata
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: MONGODB_URI
+        sync: false
+      - key: NOTIFICATION_SERVICE_URL
+        fromService:
+          type: web
+          name: queueless-notifications
+          property: host
+      - key: CLIENT_URL
+        sync: false
+
+  # -------------------------------------------------------------------
+  # Microservice 2: Notification & Alert Microservice (Express REST API)
+  # -------------------------------------------------------------------
+  - type: web
+    name: queueless-notifications
+    runtime: node
+    plan: free
+    region: oregon
+    rootDir: notification-service
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: TZ
+        value: Asia/Kolkata
+      - key: JWT_SECRET
+        fromService:
+          type: web
+          name: queueless-server
+          property: envVar
+          envVarKey: JWT_SECRET
+      - key: MONGODB_URI
+        sync: false
+      - key: QUEUE_SERVICE_URL
+        fromService:
+          type: web
+          name: queueless-server
+          property: host
+      - key: CLIENT_URL
+        sync: false
+
+  # -------------------------------------------------------------------
+  # Frontend: Single Page Application (React + Vite + Tailwind CSS)
+  # -------------------------------------------------------------------
+  - type: web
+    name: queueless-client
+    runtime: static
+    rootDir: client
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: queueless-server
+          property: host

@@ -204,7 +204,10 @@ const getAnalytics = async (req, res) => {
 // @access  Public
 const getHealth = async (req, res) => {
   let queueServiceStatus = 'unreachable';
-  const queueServiceUrl = process.env.QUEUE_SERVICE_URL || 'http://localhost:5000';
+  const rawQueueUrl = process.env.QUEUE_SERVICE_URL || 'http://localhost:5000';
+  const queueServiceUrl = (rawQueueUrl.startsWith('http://') || rawQueueUrl.startsWith('https://'))
+    ? rawQueueUrl.replace(/\/+$/, '')
+    : `https://${rawQueueUrl.replace(/\/+$/, '')}`;
 
   try {
     const response = await axios.get(`${queueServiceUrl}/api/health`, { timeout: 3000 });

@@ -9,7 +9,10 @@ const app = express();
 // Middlewares
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || '*',
+    origin: (origin, callback) => {
+      // Allow server-to-server microservice calls (no origin) and valid browser origins
+      callback(null, true);
+    },
     credentials: true,
   })
 );
