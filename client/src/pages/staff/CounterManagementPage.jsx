@@ -205,8 +205,8 @@ const CounterManagementPage = () => {
         </div>
       )}
 
-      {/* Counters Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {/* Counters Grid - Covering all 4 services matching Customer Portal */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-5">
         {counters.map((c) => {
           // Robust comparison eliminating undefined === undefined bug
           const assignedStaffId = c.assignedStaff?._id || c.assignedStaff;
@@ -284,14 +284,15 @@ const CounterManagementPage = () => {
 
                 <div className="mt-4 pt-4 border-t border-slate-100 space-y-2 text-xs">
                   <div className="text-slate-500">
-                    <span>Supported Services:</span>
-                    <div className="flex flex-wrap gap-1 mt-1">
+                    <span className="font-semibold text-slate-700">Supported Service:</span>
+                    <div className="flex flex-wrap gap-1.5 mt-1.5">
                       {c.supportedServices?.map((s) => (
                         <span
                           key={s._id}
-                          className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-700"
+                          className="text-[11px] font-bold px-2.5 py-1 rounded-lg bg-indigo-50 text-indigo-700 border border-indigo-100/80 flex items-center gap-1.5"
                         >
-                          {s.code || s.name}
+                          <span className="w-1.5 h-1.5 rounded-full bg-indigo-500"></span>
+                          {s.name || s.code}
                         </span>
                       ))}
                     </div>

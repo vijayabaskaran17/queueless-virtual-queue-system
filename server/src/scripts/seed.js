@@ -160,16 +160,16 @@ const seedData = async () => {
     // 4. Create Counters
     const counter1 = await Counter.create({
       counterNumber: 1,
-      name: 'Counter 1 - General Banking',
+      name: 'Counter 1 - Account Services & Inquiries',
       assignedStaff: staff1._id,
-      supportedServices: [serviceAcc._id, serviceCsh._id],
+      supportedServices: [serviceAcc._id],
       status: 'open',
       totalServedToday: 14,
     });
 
     const counter2 = await Counter.create({
       counterNumber: 2,
-      name: 'Counter 2 - Express Teller',
+      name: 'Counter 2 - Cash Deposits & Withdrawals',
       assignedStaff: staff2._id,
       supportedServices: [serviceCsh._id],
       status: 'open',
@@ -178,11 +178,20 @@ const seedData = async () => {
 
     const counter3 = await Counter.create({
       counterNumber: 3,
-      name: 'Counter 3 - Loans & Wealth',
+      name: 'Counter 3 - Loan & Mortgage Advisory',
       assignedStaff: null,
-      supportedServices: [serviceLon._id, serviceWlt._id],
+      supportedServices: [serviceLon._id],
       status: 'open',
       totalServedToday: 7,
+    });
+
+    const counter4 = await Counter.create({
+      counterNumber: 4,
+      name: 'Counter 4 - Wealth & Investment Planning',
+      assignedStaff: null,
+      supportedServices: [serviceWlt._id],
+      status: 'open',
+      totalServedToday: 5,
     });
 
     // Update staff assigned counter
