@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5001;
 // Connect to MongoDB
 connectDB();
 
-const server = app.listen(PORT, '0.0.0.0', () => {
+const server = app.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`=======================================================`);
   console.log(` 🔔 QueueLess Notification Microservice Running`);
   console.log(` Port: ${PORT}`);

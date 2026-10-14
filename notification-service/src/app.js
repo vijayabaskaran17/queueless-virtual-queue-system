@@ -26,8 +26,8 @@ if (process.env.NODE_ENV !== 'test') {
 // Routes
 app.use('/api/notifications', notificationRoutes);
 
-// Root health check
-app.get('/api/health', (req, res) => {
+// Health check endpoints (responds on root, /health, and /api/health)
+app.get(['/', '/health', '/api/health'], (req, res) => {
   res.status(200).json({
     status: 'healthy',
     microservice: 'Notification Service',

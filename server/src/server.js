@@ -57,7 +57,7 @@ const io = new Server(server, {
 initSocketEmitter(io);
 initSocketHandler(io);
 
-server.listen(PORT, '0.0.0.0', () => {
+server.listen(Number(PORT), '0.0.0.0', () => {
   console.log(`[QueueLess Server] Running on http://localhost:${PORT} in ${process.env.NODE_ENV || 'development'} mode`);
 });
 
