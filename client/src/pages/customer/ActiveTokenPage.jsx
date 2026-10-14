@@ -16,6 +16,7 @@ import { useSocket } from '../../context/SocketContext';
 import TokenCard from '../../components/TokenCard';
 import QueueProgress from '../../components/QueueProgress';
 import Modal from '../../components/Modal';
+import { formatIndianTime } from '../../utils/dateUtils';
 
 const ActiveTokenPage = () => {
   const navigate = useNavigate();
@@ -94,7 +95,7 @@ const ActiveTokenPage = () => {
         </button>
 
         <span className="text-xs text-slate-400">
-          Last synchronized: {new Date().toLocaleTimeString()}
+          Last synchronized: {formatIndianTime(new Date(), true)} (IST)
         </span>
       </div>
 

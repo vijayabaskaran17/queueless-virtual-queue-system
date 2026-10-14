@@ -1,4 +1,5 @@
 require('dotenv').config();
+process.env.TZ = process.env.TZ || 'Asia/Kolkata';
 const app = require('./app');
 const connectDB = require('./config/db');
 

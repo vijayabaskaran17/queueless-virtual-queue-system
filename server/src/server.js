@@ -1,4 +1,5 @@
 require('dotenv').config();
+process.env.TZ = process.env.TZ || 'Asia/Kolkata';
 const http = require('http');
 const { Server } = require('socket.io');
 const app = require('./app');

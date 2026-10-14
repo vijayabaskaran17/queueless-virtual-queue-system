@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import api from '../../services/api';
 import Modal from '../../components/Modal';
+import { formatIndianDate } from '../../utils/dateUtils';
 
 const UserManagementPage = () => {
   const [activeTab, setActiveTab] = useState('users'); // 'users' | 'invitations'
@@ -304,8 +305,8 @@ const UserManagementPage = () => {
                           {u.isActive ? 'Active' : 'Deactivated'}
                         </span>
                       </td>
-                      <td className="py-4 px-6 text-slate-500">
-                        {new Date(u.createdAt).toLocaleDateString()}
+                      <td className="py-4 px-6 text-slate-500 font-mono text-[11px]">
+                        {formatIndianDate(u.createdAt)}
                       </td>
                       <td className="py-4 px-6 text-right">
                         <button
@@ -412,10 +413,10 @@ const UserManagementPage = () => {
                           <td className="py-4 px-6 text-slate-500">
                             {inv.invitedBy?.name || 'Administrator'}
                           </td>
-                          <td className="py-4 px-6 text-slate-500">
+                          <td className="py-4 px-6 text-slate-500 font-mono text-[11px]">
                             <span className="flex items-center gap-1">
                               <Clock className="w-3 h-3 text-slate-400" />
-                              {new Date(inv.expiresAt).toLocaleDateString()}
+                              {formatIndianDate(inv.expiresAt)}
                             </span>
                           </td>
                           <td className="py-4 px-6 text-right space-x-2">

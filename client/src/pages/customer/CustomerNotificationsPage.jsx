@@ -1,6 +1,7 @@
 import React from 'react';
 import { Bell, Check, Clock, Info, AlertTriangle, CheckCircle } from 'lucide-react';
 import { useNotifications } from '../../context/NotificationContext';
+import { formatIndianDateTime } from '../../utils/dateUtils';
 
 const CustomerNotificationsPage = () => {
   const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
@@ -59,10 +60,9 @@ const CustomerNotificationsPage = () => {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2">
                   <h3 className="text-xs font-bold text-slate-900">{notif.title}</h3>
-                  <span className="text-[11px] text-slate-400 shrink-0 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {new Date(notif.createdAt).toLocaleDateString()}{' '}
-                    {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  <span className="text-[11px] text-slate-400 shrink-0 flex items-center gap-1 font-mono">
+                    <Clock className="w-3 h-3 text-slate-400" />
+                    {formatIndianDateTime(notif.createdAt)} (IST)
                   </span>
                 </div>
                 <p className="text-xs text-slate-600 mt-1 leading-relaxed">{notif.message}</p>

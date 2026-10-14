@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { History, Calendar, CheckCircle, XCircle, AlertCircle, Clock } from 'lucide-react';
 import api from '../../services/api';
+import { formatIndianDate, formatIndianTime } from '../../utils/dateUtils';
 
 const TokenHistoryPage = () => {
   const [tokens, setTokens] = useState([]);
@@ -122,10 +123,10 @@ const TokenHistoryPage = () => {
                     <td className="py-4 px-6 text-slate-500">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                        <span>{new Date(t.createdAt).toLocaleDateString()}</span>
+                        <span>{formatIndianDate(t.createdAt)}</span>
                       </div>
                       <span className="text-[10px] text-slate-400">
-                        {new Date(t.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {formatIndianTime(t.createdAt)} (IST)
                       </span>
                     </td>
                     <td className="py-4 px-6 text-slate-500 max-w-xs truncate">

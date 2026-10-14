@@ -1,5 +1,6 @@
 import React from 'react';
 import { Clock, MapPin, AlertCircle, Ban, ArrowRight, ShieldCheck } from 'lucide-react';
+import { formatIndianTime } from '../utils/dateUtils';
 
 const TokenCard = ({
   token,
@@ -129,7 +130,7 @@ const TokenCard = ({
         {showActions && token.status === 'waiting' && onCancel && (
           <div className="pt-2 flex items-center justify-between border-t border-slate-100">
             <div className="text-xs text-slate-400">
-              Issued at {new Date(token.joinedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              Issued at {formatIndianTime(token.joinedAt)} (IST)
             </div>
             <button
               onClick={() => onCancel(token._id)}

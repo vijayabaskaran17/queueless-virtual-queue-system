@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { FileText, Clock, User, Filter, ArrowRight } from 'lucide-react';
 import api from '../../services/api';
+import { formatIndianDate, formatIndianTime } from '../../utils/dateUtils';
 
 const AuditLogsPage = () => {
   const [logs, setLogs] = useState([]);
@@ -99,10 +100,10 @@ const AuditLogsPage = () => {
               ) : (
                 logs.map((log) => (
                   <tr key={log._id} className="hover:bg-slate-50/80 transition-colors">
-                    <td className="py-4 px-6 text-slate-500 whitespace-nowrap">
-                      <div>{new Date(log.timestamp).toLocaleDateString()}</div>
+                    <td className="py-4 px-6 text-slate-500 whitespace-nowrap font-mono text-[11px]">
+                      <div className="font-semibold text-slate-700">{formatIndianDate(log.timestamp)}</div>
                       <span className="text-[10px] text-slate-400">
-                        {new Date(log.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                        {formatIndianTime(log.timestamp, true)} (IST)
                       </span>
                     </td>
                     <td className="py-4 px-6">{getActionBadge(log.action)}</td>

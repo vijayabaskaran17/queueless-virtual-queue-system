@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
+import { formatIndianDate } from '../utils/dateUtils';
 
 const RegisterPage = () => {
   const { register } = useAuth();
@@ -563,9 +564,9 @@ const RegisterPage = () => {
                       <span>•</span>
                       <span>Invited by: <b>{invitationData.invitedBy}</b></span>
                       <span>•</span>
-                      <span className="inline-flex items-center gap-1 text-slate-500">
-                        <Clock className="w-3 h-3" />
-                        Expires: {new Date(invitationData.expiresAt).toLocaleDateString()}
+                      <span className="inline-flex items-center gap-1 text-slate-500 font-mono text-[11px]">
+                        <Clock className="w-3 h-3 text-slate-400" />
+                        Expires: {formatIndianDate(invitationData.expiresAt)}
                       </span>
                     </div>
 

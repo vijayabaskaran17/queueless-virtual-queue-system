@@ -4,6 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useSocket } from '../context/SocketContext';
 import { useNotifications } from '../context/NotificationContext';
 import { Link } from 'react-router-dom';
+import { formatIndianTime } from '../utils/dateUtils';
 
 const Navbar = ({ onToggleSidebar }) => {
   const { user, logout } = useAuth();
@@ -106,8 +107,8 @@ const Navbar = ({ onToggleSidebar }) => {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <span className="text-xs font-bold text-slate-800">{notif.title}</span>
-                        <span className="text-[10px] text-slate-400 shrink-0">
-                          {new Date(notif.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        <span className="text-[10px] text-slate-400 shrink-0 font-mono">
+                          {formatIndianTime(notif.createdAt)}
                         </span>
                       </div>
                       <p className="text-xs text-slate-600 mt-1 line-clamp-2">{notif.message}</p>
