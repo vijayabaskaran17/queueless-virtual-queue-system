@@ -16,21 +16,16 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5000
       - key: TZ
         value: Asia/Kolkata
       - key: JWT_SECRET
-        generateValue: true
+        value: queueless_jwt_secret_production_key_2026
       - key: JWT_EXPIRES_IN
         value: 7d
       - key: MONGODB_URI
         sync: false
       - key: NOTIFICATION_SERVICE_URL
-        fromService:
-          type: web
-          name: queueless-notifications
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://queueless-notifications.onrender.com
       - key: CLIENT_URL
         sync: false
 
@@ -49,22 +44,14 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5001
       - key: TZ
         value: Asia/Kolkata
       - key: JWT_SECRET
-        fromService:
-          type: web
-          name: queueless-server
-          envVarKey: JWT_SECRET
+        value: queueless_jwt_secret_production_key_2026
       - key: MONGODB_URI
         sync: false
       - key: QUEUE_SERVICE_URL
-        fromService:
-          type: web
-          name: queueless-server
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://queueless-server.onrender.com
       - key: CLIENT_URL
         sync: false
 
@@ -83,7 +70,4 @@ services:
         destination: /index.html
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: queueless-server
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://queueless-server.onrender.com
