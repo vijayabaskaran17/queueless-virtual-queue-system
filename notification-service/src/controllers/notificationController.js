@@ -1,4 +1,6 @@
 const Notification = require('../models/Notification');
+const Token = require('../models/Token');
+const User = require('../models/User');
 const axios = require('axios');
 
 // @desc    Dispatch notification (Inter-Service REST API called by Queue Service)

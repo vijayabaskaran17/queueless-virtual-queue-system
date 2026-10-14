@@ -45,7 +45,9 @@ router.put('/settings', updateQueueSettings);
 // Counter Switch Requests (Staff -> Admin Approval)
 router.get('/counter-switch-requests', getCounterSwitchRequests);
 router.post('/counter-switch-requests/:id/approve', approveCounterSwitchRequest);
+router.put('/counter-switch-requests/:id/approve', approveCounterSwitchRequest); // REST PUT alias
 router.post('/counter-switch-requests/:id/reject', rejectCounterSwitchRequest);
+router.put('/counter-switch-requests/:id/reject', rejectCounterSwitchRequest); // REST PUT alias
 
 // Organization Staff Invitations
 router.get('/invitations', getStaffInvitations);

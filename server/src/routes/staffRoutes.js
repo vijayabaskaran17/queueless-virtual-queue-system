@@ -23,12 +23,15 @@ router.use(authorizeRoles('staff', 'admin'));
 router.get('/dashboard', getStaffDashboard);
 router.post('/call-next', callNextToken);
 router.post('/start-service/:id', startService);
+router.put('/start-service/:id', startService); // REST PUT alias
 router.post('/complete-service/:id', completeService);
+router.put('/complete-service/:id', completeService); // REST PUT alias
 router.post('/skip-token/:id', skipToken);
 router.post('/recall-token/:id', recallToken);
 router.post('/set-counter', setCounterStatus);
 router.post('/register-customer', registerWalkinCustomer);
 router.post('/request-counter-switch', requestCounterSwitch);
+router.post('/switch-counter', requestCounterSwitch); // REST alias
 router.get('/counter-switch-request', getMyPendingCounterSwitchRequest);
 router.delete('/counter-switch-request', cancelCounterSwitchRequest);
 
