@@ -89,6 +89,18 @@ const seedData = async () => {
       dailyTokenCounter: 1,
     });
 
+    const serviceHlp = await Service.create({
+      name: 'Help Desk',
+      code: 'HLP',
+      prefix: 'H',
+      description: 'General support, customer inquiries, document checks, and branch guidance.',
+      avgDuration: 8,
+      color: '#0284c7',
+      icon: 'Layers',
+      isActive: true,
+      dailyTokenCounter: 0,
+    });
+
     console.log('[Seed] Created Services');
 
     // 3. Create Verified Organization
@@ -192,6 +204,15 @@ const seedData = async () => {
       supportedServices: [serviceWlt._id],
       status: 'open',
       totalServedToday: 5,
+    });
+
+    const counter5 = await Counter.create({
+      counterNumber: 5,
+      name: 'Help Desk',
+      assignedStaff: null,
+      supportedServices: [serviceHlp._id],
+      status: 'open',
+      totalServedToday: 0,
     });
 
     // Update staff assigned counter
